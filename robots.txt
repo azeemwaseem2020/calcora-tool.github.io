@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /clacora-tools-site.zip
-Disallow: /github-ready-website.zip
-Sitemap: https://calcora-tool.github.io/sitemap.xml
