@@ -1,1 +1,40 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Loan EMI Calculator – Monthly Payment & Interest | Calcora</title><meta name="description" content="Calculate loan EMI, total interest and total repayment instantly with Calcora's free online Loan EMI Calculator."><link rel="canonical" href="https://azeemwaseem2020.github.io/calcora-tool.github.io/loan-emi-calculator.html"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css"><meta name="robots" content="index,follow"><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Loan EMI Calculator","url":"https://azeemwaseem2020.github.io/calcora-tool.github.io/loan-emi-calculator.html","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script></head><body><header class="site-header"><a class="brand" href="./">Calcora</a><nav aria-label="Primary"><a href="./#calculators">Calculators</a><a href="./#about">About</a></nav></header><main class="section prose"><p class="eyebrow">FINANCE CALCULATOR</p><h1>Loan EMI Calculator</h1><p class="lead">Estimate your monthly loan payment, total interest and total repayment.</p><div class="hero-card"><label for="amount">Loan amount</label><input id="amount" type="number" min="0" step="0.01" value="100000"><label for="rate">Annual interest rate (%)</label><input id="rate" type="number" min="0" step="0.01" value="10"><label for="years">Loan term (years)</label><input id="years" type="number" min="1" step="1" value="5"><button class="btn" onclick="calc()">Calculate EMI</button><div id="result" aria-live="polite"></div></div><h2>How EMI is calculated</h2><p>For a standard reducing-balance loan, EMI uses the principal, monthly interest rate and number of monthly payments. Actual lender fees, taxes and payment schedules can change the final amount.</p></main><script>function calc(){const P=+amount.value,r=+rate.value/1200,n=+years.value*12;if(P<0||r<0||n<=0)return;if(r===0){show(P/n,P,n);return}const e=P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);show(e,e*n-P,e*n)}function show(e,i,t){result.innerHTML='<h2>Result</h2><p><strong>Monthly EMI:</strong> '+e.toFixed(2)+'</p><p><strong>Total interest:</strong> '+i.toFixed(2)+'</p><p><strong>Total repayment:</strong> '+t.toFixed(2)+'</p>'}calc()</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Loan EMI Calculator – Monthly Payment & Interest | Calcora</title>
+<meta name="description" content="Free Loan EMI Calculator to estimate monthly payment, total interest and total repayment. Calculate EMI quickly on mobile or desktop.">
+<link rel="canonical" href="https://azeemwaseem2020.github.io/calcora-tool.github.io/loan-emi-calculator.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<meta name="theme-color" content="#172033">
+<meta property="og:title" content="Loan EMI Calculator – Monthly Payment & Interest | Calcora">
+<meta property="og:description" content="Estimate monthly EMI, total interest and total repayment with a free online loan calculator.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://azeemwaseem2020.github.io/calcora-tool.github.io/loan-emi-calculator.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Loan EMI Calculator | Calcora">
+<meta name="twitter:description" content="Calculate monthly EMI, total interest and total repayment.">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Loan EMI Calculator","url":"https://azeemwaseem2020.github.io/calcora-tool.github.io/loan-emi-calculator.html","applicationCategory":"FinanceApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+</head>
+<body>
+<header class="site-header"><a class="brand" href="./" aria-label="Calcora home">Calcora</a><nav aria-label="Primary navigation"><a href="./#calculators">Calculators</a><a href="./#categories">Categories</a><a href="./#about">About</a></nav></header>
+<main class="section prose">
+<p class="eyebrow">FINANCE CALCULATOR</p><h1>Loan EMI Calculator</h1><p class="lead">Estimate your monthly loan payment, total interest and total repayment.</p>
+<div class="hero-card calculator-card">
+<label for="amount">Loan amount</label><input id="amount" type="number" min="0.01" step="0.01" value="100000" inputmode="decimal">
+<label for="rate">Annual interest rate (%)</label><input id="rate" type="number" min="0" step="0.01" value="10" inputmode="decimal">
+<label for="years">Loan term (years)</label><input id="years" type="number" min="0.01" step="0.5" value="5" inputmode="decimal">
+<button class="btn" type="button" id="calculate">Calculate EMI</button><div id="result" aria-live="polite" role="status"></div>
+</div>
+<h2>How the EMI calculation works</h2><p>For a standard reducing-balance loan, the EMI depends on the principal, monthly interest rate and number of monthly payments. Actual lender fees, taxes and payment schedules can change the final amount.</p>
+<h2>Related calculators</h2><p><a href="compound-interest-calculator.html">Compound Interest Calculator</a> · <a href="solar-load-calculator.html">Solar Load Calculator</a> · <a href="./#calculators">All Calcora calculators</a></p>
+</main>
+<script>
+const amount=document.getElementById('amount'),rate=document.getElementById('rate'),years=document.getElementById('years'),result=document.getElementById('result');
+function calc(){const P=Number(amount.value),r=Number(rate.value)/1200,n=Number(years.value)*12;if(!Number.isFinite(P)||!Number.isFinite(r)||!Number.isFinite(n)||P<=0||r<0||n<=0){result.innerHTML='<p role="alert">Please enter valid positive loan amount and term values.</p>';return}const e=r===0?P/n:P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);const interest=e*n-P;result.innerHTML='<h2>Result</h2><p><strong>Monthly EMI:</strong> '+e.toFixed(2)+'</p><p><strong>Total interest:</strong> '+interest.toFixed(2)+'</p><p><strong>Total repayment:</strong> '+(e*n).toFixed(2)+'</p>'}
+document.getElementById('calculate').addEventListener('click',calc);calc();
+</script>
+</body></html>
