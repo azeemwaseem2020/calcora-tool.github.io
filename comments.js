@@ -3,64 +3,17 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const SUPABASE_URL = "https://jknbpyoamktxewajfycv.supabase.co";
 const SUPABASE_KEY = "sb_publishable_tX60SAnsVwnUfM1tmKnlXQ_-zsKwa4K";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
 const pageSlug = window.location.pathname.split("/").pop() || "home";
 const mount = document.querySelector("main");
 if (!mount || document.querySelector("#calcora-comments")) throw new Error("Comments mount unavailable");
-
-const section = document.createElement("section");
-section.id = "calcora-comments";
-section.className = "section comments-wrap";
-section.innerHTML = `
-  <div class="comments-card">
-    <p class="eyebrow">COMMUNITY</p>
-    <h2>Leave a Reply</h2>
-    <p class="comments-intro">Have a question or useful experience to share? Leave a public comment below.</p>
-    <form id="comment-form" class="comment-form" novalidate>
-      <div class="comment-fields">
-        <label>Name<input name="name" type="text" autocomplete="name" maxlength="80" required placeholder="Your name"></label>
-        <label>Email<input name="email" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com"><small>Your email is private and will not be displayed publicly.</small></label>
-      </div>
-      <label>Comment<textarea name="comment" rows="6" maxlength="2000" required placeholder="Write your comment..."></textarea></label>
-      <input name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" class="comment-honeypot">
-      <button class="btn" type="submit" id="comment-submit">Post Comment</button>
-      <p id="comment-status" class="comment-status" role="status" aria-live="polite"></p>
-    </form>
-    <div class="comments-list-wrap">
-      <h3>Comments</h3>
-      <div id="comments-list"><p class="muted">Loading comments…</p></div>
-    </div>
-  </div>`;
-mount.insertAdjacentElement("afterend", section);
-
-const style = document.createElement("style");
-style.textContent = `
-.comments-wrap{padding-top:10px}.comments-card{background:rgba(255,255,255,.97);border:1px solid #dce5ee;border-radius:24px;padding:30px;box-shadow:0 18px 48px rgba(20,33,61,.08)}.comments-card h2{margin-bottom:6px}.comments-intro{color:#657387;margin-top:0}.comment-form label{display:block;font-weight:800;color:#34445a;margin:16px 0 7px}.comment-fields{display:grid;grid-template-columns:1fr 1fr;gap:18px}.comment-form input,.comment-form textarea{width:100%;padding:13px 14px;border:1px solid #cfdbe6;border-radius:11px;background:#fbfdff;color:#182338;font:inherit}.comment-form input:focus,.comment-form textarea:focus{border-color:#1aa48e;box-shadow:0 0 0 4px rgba(26,164,142,.1);outline:none}.comment-form small{display:block;color:#758296;font-size:.78rem;font-weight:500;margin-top:5px}.comment-honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;opacity:0!important}.comment-status{min-height:24px;font-weight:700;margin:12px 0 0}.comments-list-wrap{margin-top:35px;border-top:1px solid #e1e8ef;padding-top:25px}.comments-list-wrap h3{margin-top:0}.comment-item{padding:18px 0;border-bottom:1px solid #e7edf2}.comment-item:last-child{border-bottom:0}.comment-meta{display:flex;justify-content:space-between;gap:12px;align-items:center}.comment-name{font-weight:900;color:#182338}.comment-date{font-size:.78rem;color:#7a8798}.comment-body{color:#59697c;white-space:pre-wrap;margin:8px 0 0}.comments-empty{color:#758296}@media(max-width:650px){.comment-fields{grid-template-columns:1fr}.comments-card{padding:21px}}`;
-document.head.appendChild(style);
-
-const form = document.querySelector("#comment-form");
-const status = document.querySelector("#comment-status");
-const list = document.querySelector("#comments-list");
-function setStatus(message, ok = false) { status.textContent = message; status.style.color = ok ? "#087f70" : "#b04a3a"; }
-function escapeText(value) { return String(value).replace(/[&<>\"]/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[char])); }
-async function loadComments() {
-  const { data, error } = await supabase.from("comments").select("id,name,comment,created_at").eq("page_slug", pageSlug).order("created_at", { ascending: false });
-  if (error) { list.innerHTML = `<p class="comments-empty">Comments are temporarily unavailable. Please try again later.</p>`; return; }
-  if (!data?.length) { list.innerHTML = `<p class="comments-empty">No comments yet. Be the first to leave a reply.</p>`; return; }
-  list.innerHTML = data.map(item => `<article class="comment-item"><div class="comment-meta"><span class="comment-name">${escapeText(item.name)}</span><time class="comment-date" datetime="${escapeText(item.created_at)}">${new Date(item.created_at).toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"})}</time></div><p class="comment-body">${escapeText(item.comment)}</p></article>`).join("");
-}
-form.addEventListener("submit", async event => {
-  event.preventDefault(); const formData = new FormData(form); const name = String(formData.get("name") || "").trim(); const email = String(formData.get("email") || "").trim(); const comment = String(formData.get("comment") || "").trim(); const website = String(formData.get("website") || "").trim();
-  if (website) return; if (name.length < 2 || name.length > 80) return setStatus("Please enter a valid name."); if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) return setStatus("Please enter a valid email address."); if (comment.length < 2 || comment.length > 2000) return setStatus("Please enter a comment between 2 and 2000 characters.");
-  const button = document.querySelector("#comment-submit"); button.disabled = true; button.textContent = "Posting…"; setStatus("");
-  const { data, error } = await supabase.from("comments").insert({ page_slug: pageSlug, name, comment }).select("id").single();
-  if (error) { button.disabled = false; button.textContent = "Post Comment"; return setStatus("Could not post your comment. Please try again."); }
-  const { error: contactError } = await supabase.from("comment_contacts").insert({ comment_id: data.id, email }); if (contactError) console.warn("Private comment contact was not saved", contactError);
-  form.reset(); setStatus("Your comment has been posted publicly. Thank you!", true); button.disabled = false; button.textContent = "Post Comment"; await loadComments();
-});
-loadComments();
-
-// Calculator enhancements are loaded from one shared, cacheable script so every calculator receives the same QA layer.
-if (["loan-emi-calculator.html","compound-interest-calculator.html","psx-calculator.html","solar-load-calculator.html","tmr-feed-calculator.html","fertilizer-calculator.html"].includes(pageSlug)) {
-  const s = document.createElement("script"); s.src = "calculator-enhancements.js"; s.defer = true; document.head.appendChild(s);
-}
+const section = document.createElement("section"); section.id="calcora-comments"; section.className="section comments-wrap";
+section.innerHTML=`<div class="comments-card"><p class="eyebrow">COMMUNITY</p><h2>Leave a Reply</h2><p class="comments-intro">Have a question or useful experience to share? Leave a public comment below.</p><form id="comment-form" class="comment-form" novalidate><div class="comment-fields"><label>Name<input name="name" type="text" autocomplete="name" maxlength="80" required placeholder="Your name"></label><label>Email<input name="email" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com"><small>Your email is private and will not be displayed publicly.</small></label></div><label>Comment<textarea name="comment" rows="6" maxlength="2000" required placeholder="Write your comment..."></textarea></label><input name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" class="comment-honeypot"><button class="btn" type="submit" id="comment-submit">Post Comment</button><p id="comment-status" class="comment-status" role="status" aria-live="polite"></p></form><div class="comments-list-wrap"><h3>Comments</h3><div id="comments-list"><p class="muted">Loading comments…</p></div></div></div>`;
+mount.insertAdjacentElement("afterend",section);
+const style=document.createElement("style"); style.textContent=`.comments-wrap{padding-top:10px}.comments-card{background:rgba(255,255,255,.97);border:1px solid #dce5ee;border-radius:24px;padding:30px;box-shadow:0 18px 48px rgba(20,33,61,.08)}.comments-card h2{margin-bottom:6px}.comments-intro{color:#657387;margin-top:0}.comment-form label{display:block;font-weight:800;color:#34445a;margin:16px 0 7px}.comment-fields{display:grid;grid-template-columns:1fr 1fr;gap:18px}.comment-form input,.comment-form textarea{width:100%;padding:13px 14px;border:1px solid #cfdbe6;border-radius:11px;background:#fbfdff;color:#182338;font:inherit}.comment-form small{display:block;color:#758296;font-size:.78rem;font-weight:500;margin-top:5px}.comment-honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;opacity:0!important}.comment-status{min-height:24px;font-weight:700;margin:12px 0 0}.comments-list-wrap{margin-top:35px;border-top:1px solid #e1e8ef;padding-top:25px}.comment-item{padding:18px 0;border-bottom:1px solid #e7edf2}.comment-meta{display:flex;justify-content:space-between;gap:12px;align-items:center}.comment-name{font-weight:900;color:#182338}.comment-date{font-size:.78rem;color:#7a8798}.comment-body{color:#59697c;white-space:pre-wrap;margin:8px 0 0}.comments-empty{color:#758296}@media(max-width:650px){.comment-fields{grid-template-columns:1fr}.comments-card{padding:21px}}`; document.head.appendChild(style);
+const form=document.querySelector("#comment-form"),status=document.querySelector("#comment-status"),list=document.querySelector("#comments-list");
+function setStatus(message,ok=false){status.textContent=message;status.style.color=ok?"#087f70":"#b04a3a"}
+function escapeText(value){return String(value).replace(/[&<>\"]/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[char]))}
+async function loadComments(){const {data,error}=await supabase.from("comments").select("id,name,comment,created_at").eq("page_slug",pageSlug).order("created_at",{ascending:false});if(error){list.innerHTML=`<p class="comments-empty">Comments are temporarily unavailable. Please try again later.</p>`;return}if(!data?.length){list.innerHTML=`<p class="comments-empty">No comments yet. Be the first to leave a reply.</p>`;return}list.innerHTML=data.map(item=>`<article class="comment-item"><div class="comment-meta"><span class="comment-name">${escapeText(item.name)}</span><time class="comment-date" datetime="${escapeText(item.created_at)}">${new Date(item.created_at).toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"})}</time></div><p class="comment-body">${escapeText(item.comment)}</p></article>`).join("")}
+form.addEventListener("submit",async event=>{event.preventDefault();const fd=new FormData(form),name=String(fd.get("name")||"").trim(),email=String(fd.get("email")||"").trim(),comment=String(fd.get("comment")||"").trim(),website=String(fd.get("website")||"").trim();if(website)return;if(name.length<2||name.length>80)return setStatus("Please enter a valid name.");if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254)return setStatus("Please enter a valid email address.");if(comment.length<2||comment.length>2000)return setStatus("Please enter a comment between 2 and 2000 characters.");const button=document.querySelector("#comment-submit");button.disabled=true;button.textContent="Posting…";setStatus("");const {data,error}=await supabase.from("comments").insert({page_slug:pageSlug,name,comment}).select("id").single();if(error){button.disabled=false;button.textContent="Post Comment";return setStatus("Could not post your comment. Please try again.")}const {error:contactError}=await supabase.from("comment_contacts").insert({comment_id:data.id,email});if(contactError)console.warn("Private comment contact was not saved",contactError);form.reset();setStatus("Your comment has been posted publicly. Thank you!",true);button.disabled=false;button.textContent="Post Comment";await loadComments()});loadComments();
+const calculatorPages=["loan-emi-calculator.html","compound-interest-calculator.html","psx-calculator.html","solar-load-calculator.html","tmr-feed-calculator.html","fertilizer-calculator.html"];
+if(calculatorPages.includes(pageSlug)&&!document.querySelector('script[src*="calculator-enhancements.js"]')){const s=document.createElement("script");s.src="calculator-enhancements.js";s.defer=true;document.head.appendChild(s)}
