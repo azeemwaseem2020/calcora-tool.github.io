@@ -1,35 +1,19 @@
 (function(){
-  'use strict';
-  function init(){
-    var section=document.getElementById('calculator-list');
-    if(!section) return;
-    var cards=Array.prototype.slice.call(section.querySelectorAll('.calculator-card'));
-    if(!cards.length) return;
-    var tools=document.createElement('div');
-    tools.className='calculator-search-tools';
-    tools.innerHTML='<label class="sr-only" for="calculator-search">Search calculators</label><input id="calculator-search" type="search" placeholder="Search calculators (e.g. EMI, PSX, solar, fertilizer)" autocomplete="off"><div class="calculator-filters" role="group" aria-label="Filter calculators"><button type="button" class="active" data-filter="all">All</button><button type="button" data-filter="Finance">Finance</button><button type="button" data-filter="PSX">PSX</button><button type="button" data-filter="Solar">Solar</button><button type="button" data-filter="Agriculture">Agriculture</button><button type="button" data-filter="Math">Math</button><button type="button" data-filter="Science">Science</button></div><p class="calculator-count" aria-live="polite"></p><p class="calculator-no-results" aria-live="polite" hidden>No matching calculator found. Try a broader term such as loan, math, science, PSX, solar or fertilizer.</p>';
-    section.insertBefore(tools, section.querySelector('.grid'));
-    var input=tools.querySelector('#calculator-search');
-    var buttons=Array.prototype.slice.call(tools.querySelectorAll('[data-filter]'));
-    var active='all';
-    function render(){
-      var q=(input.value||'').trim().toLowerCase();
-      var shown=0;
-      cards.forEach(function(card){
-        var text=card.textContent.toLowerCase();
-        var category=(card.getAttribute('data-category')||'').toLowerCase();
-        var matchText=!q || text.indexOf(q)!==-1;
-        var matchCat=active==='all' || category===active.toLowerCase();
-        var visible=matchText && matchCat;
-        card.hidden=!visible;
-        if(visible) shown++;
-      });
-      section.querySelector('.calculator-count').textContent=shown+' calculator'+(shown===1?'':'s')+' shown';
-      section.querySelector('.calculator-no-results').hidden=shown!==0;
-    }
-    input.addEventListener('input',render);
-    buttons.forEach(function(btn){btn.addEventListener('click',function(){active=btn.getAttribute('data-filter');buttons.forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();});});
-    render();
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+'use strict';
+function init(){
+ var section=document.getElementById('calculator-list'); if(!section)return;
+ var cards=Array.prototype.slice.call(section.querySelectorAll('.calculator-card')); if(!cards.length)return;
+ var tools=document.createElement('div'); tools.className='calculator-search-tools';
+ tools.innerHTML='<label class="sr-only" for="calculator-search">Search calculators</label><input id="calculator-search" type="search" placeholder="Search: EMI, tax, PSX, solar, fertilizer, force..." autocomplete="off"><p class="muted">Search by calculator name, topic or common need.</p><div class="calculator-intents" role="group" aria-label="Popular searches"><button type="button" data-query="loan">Loan</button><button type="button" data-query="tax">Tax</button><button type="button" data-query="PSX">PSX</button><button type="button" data-query="solar">Solar</button><button type="button" data-query="fertilizer">Fertilizer</button><button type="button" data-query="force">Force</button><button type="button" data-query="math">Math</button></div><div class="calculator-filters" role="group" aria-label="Filter calculators"><button type="button" class="active" data-filter="all">All</button><button type="button" data-filter="Finance">Finance</button><button type="button" data-filter="PSX">PSX</button><button type="button" data-filter="Solar">Solar</button><button type="button" data-filter="Agriculture">Agriculture</button><button type="button" data-filter="Math">Math</button><button type="button" data-filter="Science">Science</button></div><p class="calculator-count" aria-live="polite"></p><p class="calculator-no-results" aria-live="polite" hidden>No matching calculator found. Try loan, tax, Zakat, EMI, PSX, solar, fertilizer, force, velocity, math or science.</p>';
+ section.insertBefore(tools,section.querySelector('.grid'));
+ var input=tools.querySelector('#calculator-search'), buttons=Array.prototype.slice.call(tools.querySelectorAll('[data-filter]')), intents=Array.prototype.slice.call(tools.querySelectorAll('[data-query]')), active='all';
+ var aliases={emi:'loan installment monthly payment finance',loan:'emi installment monthly payment markup',tax:'salary income fbr pakistan finance',salary:'tax income pakistan',zakat:'islamic charity nisab',psx:'stock shares profit dividend capital gain portfolio',stock:'psx shares profit dividend',shares:'psx stock portfolio',solar:'sun energy load system size electricity',electricity:'solar energy load',fertilizer:'npk urea dap mop potash agriculture',npk:'fertilizer nitrogen phosphorus potassium',tmr:'feed ration livestock cattle agriculture',feed:'tmr ration livestock',force:'physics mass acceleration newton',velocity:'physics speed displacement time',acceleration:'physics velocity time',kinetic:'energy physics mass velocity',density:'mass volume measurement science',math:'percentage ratio equation quadratic average probability geometry'};
+ function render(){var raw=(input.value||'').trim().toLowerCase(), shown=0; cards.forEach(function(card){var text=(card.textContent+' '+(card.getAttribute('data-keywords')||'')).toLowerCase(),cat=(card.getAttribute('data-category')||'').toLowerCase(),terms=(aliases[raw]?raw+' '+aliases[raw]:raw).split(/\s+/).filter(Boolean),match=!raw||terms.some(function(t){return text.indexOf(t)!==-1;}),catMatch=active==='all'||cat===active.toLowerCase(),visible=match&&catMatch;card.hidden=!visible;if(visible)shown++;});section.querySelector('.calculator-count').textContent=shown+' calculator'+(shown===1?'':'s')+' shown';section.querySelector('.calculator-no-results').hidden=shown!==0;}
+ function setQuery(q){input.value=q;history.replaceState(null,'','calculators.html'+(q?'?q='+encodeURIComponent(q):''));render();input.focus();}
+ input.addEventListener('input',function(){history.replaceState(null,'','calculators.html'+(input.value?'?q='+encodeURIComponent(input.value):''));render();});
+ buttons.forEach(function(b){b.addEventListener('click',function(){active=b.getAttribute('data-filter');buttons.forEach(function(x){x.classList.remove('active');});b.classList.add('active');render();});});
+ intents.forEach(function(b){b.addEventListener('click',function(){setQuery(b.getAttribute('data-query'));});});
+ var params=new URLSearchParams(window.location.search);if(params.get('q'))input.value=params.get('q');render();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
