@@ -68,11 +68,22 @@
 </select>
 </div>
 
+<label for="material">Optional material reference</label>
+<select id="material"><option value="">— Compare with a common material —</option><option value="water">Water</option><option value="ice">Ice</option><option value="air">Air</option><option value="aluminum">Aluminium</option><option value="steel">Steel</option><option value="copper">Copper</option><option value="lead">Lead</option><option value="gold">Gold</option></select>
 <label for="resultUnit">Result unit</label>
 <select id="resultUnit" aria-label="Result unit"></select>
+<div class="calculator-actions">
 <button class="btn" id="calc" type="button">Calculate</button>
+<button class="btn" id="reset" type="button">Reset</button>
+<button class="btn" id="copy" type="button">Copy Result</button>
+</div>
 <div id="result" class="callout" aria-live="polite" style="margin-top:16px">Enter your values and select Calculate.</div>
+<div id="comparison" class="callout" aria-live="polite" style="margin-top:12px">Material comparison will appear here when a reference is selected.</div>
 </section>
+
+<h2>What your density result means</h2>
+<p>A density value is only meaningful with its unit and measurement conditions. Calcora normalizes your selected inputs before solving, then converts the answer into the result unit you choose.</p>
+<ul><li><strong>Lower than water:</strong> a material can have an average density below water and may float if its overall shape and displaced volume allow it to do so.</li><li><strong>About the same as water:</strong> the material may have near-neutral buoyancy under the stated conditions.</li><li><strong>Higher than water:</strong> a solid object made entirely of that material tends to sink in water.</li></ul>
 
 <h2>Density formula</h2>
 <p>Density is the amount of mass contained in a given volume. The basic formula is <strong>ρ = m/V</strong>, where ρ is density, m is mass and V is volume.</p>
@@ -144,49 +155,49 @@
 
 <script>
 (function(){
-  var solve=document.getElementById('solve'), massBox=document.getElementById('massBox'), volumeBox=document.getElementById('volumeBox'), densityBox=document.getElementById('densityBox');
-  var mass=document.getElementById('mass'), volume=document.getElementById('volume'), density=document.getElementById('density');
-  var massUnit=document.getElementById('massUnit'), volumeUnit=document.getElementById('volumeUnit'), densityUnit=document.getElementById('densityUnit'), resultUnit=document.getElementById('resultUnit'), result=document.getElementById('result');
-
-  var massToKg={mg:0.000001,g:0.001,kg:1,lb:0.45359237};
-  var volumeToM3={mL:0.000001,cm3:0.000001,L:0.001,m3:1,in3:0.000016387064,ft3:0.028316846592};
-  var densityToKgm3={kgm3:1,gcm3:1000,gmL:1000,kgL:1000,lbft3:16.01846337};
-  var labels={kgm3:'kg/m³',gcm3:'g/cm³',gmL:'g/mL',kgL:'kg/L',lbft3:'lb/ft³',g:'g',kg:'kg',mg:'mg',lb:'lb',cm3:'cm³',mL:'mL',L:'L',m3:'m³',in3:'in³',ft3:'ft³'};
-
-  function setOptions(){
-    var mode=solve.value, opts=[];
-    massBox.hidden=mode==='mass'; volumeBox.hidden=mode==='volume'; densityBox.hidden=mode==='density';
-    if(mode==='density') opts=[['kgm3','kg/m³'],['gcm3','g/cm³'],['gmL','g/mL'],['kgL','kg/L'],['lbft3','lb/ft³']];
-    if(mode==='mass') opts=[['kg','kg'],['g','g'],['mg','mg'],['lb','lb']];
-    if(mode==='volume') opts=[['m3','m³'],['L','L'],['cm3','cm³'],['mL','mL'],['in3','in³'],['ft3','ft³']];
-    resultUnit.innerHTML=opts.map(function(x){return '<option value="'+x[0]+'">'+x[1]+'</option>';}).join('');
-  }
-
-  function fmt(n){return Number(n).toLocaleString(undefined,{maximumFractionDigits:10});}
-  function calc(){
-    var mode=solve.value, m=Number(mass.value), v=Number(volume.value), d=Number(density.value);
-    var answer, unit, steps;
-    if(mode==='density'){
-      if(!Number.isFinite(m)||m<0||!Number.isFinite(v)||v<=0){result.textContent='Enter a valid mass and a volume greater than zero.';return;}
-      var kg=m*massToKg[massUnit.value], m3=v*volumeToM3[volumeUnit.value], kgm3=kg/m3;
-      var out=densityToKgm3[resultUnit.value]; answer=kgm3/out; unit=labels[resultUnit.value];
-      steps='Density = mass ÷ volume = '+fmt(m)+' '+labels[massUnit.value]+' ÷ '+fmt(v)+' '+labels[volumeUnit.value];
-    } else if(mode==='mass'){
-      if(!Number.isFinite(d)||d<0||!Number.isFinite(v)||v<0){result.textContent='Enter valid density and volume values.';return;}
-      var kgm3b=d*densityToKgm3[densityUnit.value], m3b=v*volumeToM3[volumeUnit.value], kgOut=kgm3b*m3b;
-      answer=kgOut/massToKg[resultUnit.value]; unit=labels[resultUnit.value];
-      steps='Mass = density × volume = '+fmt(d)+' '+labels[densityUnit.value]+' × '+fmt(v)+' '+labels[volumeUnit.value];
-    } else {
-      if(!Number.isFinite(m)||m<0||!Number.isFinite(d)||d<=0){result.textContent='Enter a valid mass and a density greater than zero.';return;}
-      var kgb=m*massToKg[massUnit.value], kgm3c=d*densityToKgm3[densityUnit.value], m3c=kgb/kgm3c;
-      answer=m3c/volumeToM3[resultUnit.value]; unit=labels[resultUnit.value];
-      steps='Volume = mass ÷ density = '+fmt(m)+' '+labels[massUnit.value]+' ÷ '+fmt(d)+' '+labels[densityUnit.value];
-    }
-    result.innerHTML='<strong>'+fmt(answer)+' '+unit+'</strong><br><span>'+steps+'</span>';
-  }
-
-  solve.addEventListener('change',setOptions); document.getElementById('calc').addEventListener('click',calc);
-  setOptions();
+var solve=document.getElementById('solve'),massBox=document.getElementById('massBox'),volumeBox=document.getElementById('volumeBox'),densityBox=document.getElementById('densityBox');
+var mass=document.getElementById('mass'),volume=document.getElementById('volume'),density=document.getElementById('density'),massUnit=document.getElementById('massUnit'),volumeUnit=document.getElementById('volumeUnit'),densityUnit=document.getElementById('densityUnit'),resultUnit=document.getElementById('resultUnit'),result=document.getElementById('result'),comparison=document.getElementById('comparison'),material=document.getElementById('material');
+var massToKg={mg:0.000001,g:0.001,kg:1,lb:0.45359237};
+var volumeToM3={mL:0.000001,cm3:0.000001,L:0.001,m3:1,in3:0.000016387064,ft3:0.028316846592};
+var densityToKgm3={kgm3:1,gcm3:1000,gmL:1000,kgL:1000,lbft3:16.01846337};
+var labels={kgm3:'kg/m³',gcm3:'g/cm³',gmL:'g/mL',kgL:'kg/L',lbft3:'lb/ft³',g:'g',kg:'kg',mg:'mg',lb:'lb',cm3:'cm³',mL:'mL',L:'L',m3:'m³',in3:'in³',ft3:'ft³'};
+var refs={water:{name:'Water',d:1000},ice:{name:'Ice',d:917},air:{name:'Air',d:1.225},aluminum:{name:'Aluminium',d:2700},steel:{name:'Steel',d:7850},copper:{name:'Copper',d:8960},lead:{name:'Lead',d:11340},gold:{name:'Gold',d:19320}};
+function setOptions(){
+var mode=solve.value,opts=[];
+massBox.hidden=mode==='mass';volumeBox.hidden=mode==='volume';densityBox.hidden=mode==='density';
+if(mode==='density')opts=[['kgm3','kg/m³'],['gcm3','g/cm³'],['gmL','g/mL'],['kgL','kg/L'],['lbft3','lb/ft³']];
+if(mode==='mass')opts=[['kg','kg'],['g','g'],['mg','mg'],['lb','lb']];
+if(mode==='volume')opts=[['m3','m³'],['L','L'],['cm3','cm³'],['mL','mL'],['in3','in³'],['ft3','ft³']];
+resultUnit.innerHTML=opts.map(function(x){return '<option value="'+x[0]+'">'+x[1]+'</option>';}).join('');
+}
+function fmt(n){return Number(n).toLocaleString(undefined,{maximumFractionDigits:10});}
+function compare(kgm3){
+if(!material.value){comparison.textContent='Select a reference material to compare your calculated density.';return;}
+var ref=refs[material.value],ratio=kgm3/ref.d;
+var relation=ratio<0.98?'lower than':ratio>1.02?'higher than':'close to';
+comparison.innerHTML='<strong>'+ref.name+' comparison:</strong> '+fmt(kgm3)+' kg/m³ is '+relation+' the reference value of '+fmt(ref.d)+' kg/m³ (ratio '+ratio.toLocaleString(undefined,{maximumFractionDigits:4})+'). Reference values are approximate.';
+}
+function calc(){
+var mode=solve.value,m=Number(mass.value),v=Number(volume.value),d=Number(density.value),answer,unit,steps,kgm3;
+if(mode==='density'){
+if(!Number.isFinite(m)||m<0||!Number.isFinite(v)||v<=0){result.textContent='Enter a valid mass and a volume greater than zero.';return;}
+kgm3=(m*massToKg[massUnit.value])/(v*volumeToM3[volumeUnit.value]); answer=kgm3/densityToKgm3[resultUnit.value];unit=labels[resultUnit.value];steps='Density = mass ÷ volume = '+fmt(m)+' '+labels[massUnit.value]+' ÷ '+fmt(v)+' '+labels[volumeUnit.value];
+}else if(mode==='mass'){
+if(!Number.isFinite(d)||d<0||!Number.isFinite(v)||v<0){result.textContent='Enter valid density and volume values.';return;}
+kgm3=d*densityToKgm3[densityUnit.value];answer=(kgm3*v*volumeToM3[volumeUnit.value])/massToKg[resultUnit.value];unit=labels[resultUnit.value];steps='Mass = density × volume = '+fmt(d)+' '+labels[densityUnit.value]+' × '+fmt(v)+' '+labels[volumeUnit.value];
+}else{
+if(!Number.isFinite(m)||m<0||!Number.isFinite(d)||d<=0){result.textContent='Enter a valid mass and a density greater than zero.';return;}
+kgm3=d*densityToKgm3[densityUnit.value];answer=(m*massToKg[massUnit.value]/kgm3)/volumeToM3[resultUnit.value];unit=labels[resultUnit.value];steps='Volume = mass ÷ density = '+fmt(m)+' '+labels[massUnit.value]+' ÷ '+fmt(d)+' '+labels[densityUnit.value];
+}
+result.innerHTML='<strong>'+fmt(answer)+' '+unit+'</strong><br><span>'+steps+'</span>';
+compare(kgm3);
+}
+document.getElementById('calc').addEventListener('click',calc);
+solve.addEventListener('change',function(){setOptions();result.textContent='Enter the required values and calculate.';comparison.textContent='Select a reference material to compare your result.';});
+material.addEventListener('change',function(){if(result.textContent.indexOf('Enter')!==0)calc();});
+document.getElementById('reset').addEventListener('click',function(){mass.value='';volume.value='';density.value='';material.value='';result.textContent='Enter your values and select Calculate.';comparison.textContent='Material comparison will appear here when a reference is selected.';});
+document.getElementById('copy').addEventListener('click',function(){var text=result.innerText.trim();if(!text||text.indexOf('Enter')===0){return;}if(navigator.clipboard){navigator.clipboard.writeText(text).then(function(){document.getElementById('copy').textContent='Copied';setTimeout(function(){document.getElementById('copy').textContent='Copy Result';},1200);});}});
+setOptions();
 })();
 </script>
 </body>
