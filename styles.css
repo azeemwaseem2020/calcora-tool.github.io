@@ -3,3 +3,11 @@
 /* Keep primary navigation on one horizontal line */
 .site-header nav{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;justify-content:flex-start;gap:4px;white-space:nowrap;overflow-x:auto;overflow-y:hidden;}
 .site-header nav a{display:inline-flex;flex:0 0 auto;white-space:nowrap;}
+
+/* Final professional primary navigation: one horizontal row on every viewport */
+.site-header .header-inner{min-width:0}
+.site-header nav{display:flex!important;flex:1 1 auto;min-width:0;flex-wrap:nowrap!important;overflow-x:auto;overflow-y:hidden;white-space:nowrap;scrollbar-width:none;justify-content:flex-start!important;gap:2px;}
+.site-header nav::-webkit-scrollbar{display:none}
+.site-header nav a{display:inline-flex!important;flex:0 0 auto!important;white-space:nowrap!important;}
+@media(max-width:900px){.site-header .header-inner{gap:10px}.site-header nav{justify-content:flex-start!important;}}
+@media(max-width:580px){.site-header .header-inner{padding:10px 12px;gap:8px}.site-header nav{gap:0}.site-header nav a{padding:8px 10px;font-size:.82rem;}}
