@@ -213,7 +213,30 @@
 <li>Are reference values being compared under compatible conditions?</li>
 <li>Could buoyancy, air density, evaporation, absorption, porosity or thermal expansion affect the result?</li>
 </ul>
-<h2>Significant figures and scientific notation</h2><p>Scientific notation makes very large or very small density values easier to read. Significant figures should reflect the measurement information available, not simply the number of digits displayed by a calculator. NIST provides guidance on expressing measured quantities and significant digits.</p><h2>Uncertainty: calculator estimate vs measurement result</h2><p>Calcora can provide a first-order propagation estimate for independent mass and volume uncertainties. This is not a complete metrological uncertainty budget. NISTs Uncertainty Machine supports measurement models, distributions, correlations, standard and expanded uncertainties, coverage intervals and uncertainty budgets.</p><h2>Technical references</h2>
+<h2>Significant figures and scientific notation</h2><p>Scientific notation makes very large or very small density values easier to read. Significant figures should reflect the measurement information available, not simply the number of digits displayed by a calculator. NIST provides guidance on expressing measured quantities and significant digits.</p><h2>Uncertainty: calculator estimate vs measurement result</h2><p>Calcora can provide a first-order propagation estimate for independent mass and volume uncertainties. This is not a complete metrological uncertainty budget. NISTs Uncertainty Machine supports measurement models, distributions, correlations, standard and expanded uncertainties, coverage intervals and uncertainty budgets.</p><h2>Choose a density measurement method</h2>
+<p>The best method depends on the sample and the required uncertainty. This guide helps you choose a practical starting point; it does not replace a validated laboratory method.</p>
+<div class="table-wrap"><table><thead><tr><th>Sample</th><th>Common approach</th><th>Key considerations</th></tr></thead><tbody>
+<tr><td>Regular solid</td><td>Mass ÷ geometric volume</td><td>Measure dimensions carefully; account for thermal expansion when relevant.</td></tr>
+<tr><td>Irregular solid</td><td>Fluid displacement or hydrostatic weighing</td><td>Check immersion, trapped bubbles, absorption and buoyancy corrections.</td></tr>
+<tr><td>Liquid</td><td>Pycnometer, calibrated volume or oscillating-tube instrument</td><td>Temperature control is important; NIST describes micropipette, pycnometer and oscillating-tube approaches.</td></tr>
+<tr><td>Gas</td><td>Equation of state or calibrated densimetry</td><td>Pressure, temperature, composition and non-ideal behavior can matter.</td></tr>
+<tr><td>Powder / porous material</td><td>Method depends on whether bulk or particle density is required</td><td>Define the measurand first; packing, pores and trapped gas can change the result.</td></tr>
+</tbody></table></div>
+<h2>Temperature-aware reference values</h2>
+<p>Density is generally not a universal single number for a material: temperature and, for fluids, pressure can affect density. For this reason, the reference comparison on this page is intentionally approximate unless a temperature/pressure-specific reference is selected. NIST documents water-density standards and high-accuracy pressure-density-temperature measurements, and emphasizes traceability for density measurements.</p>
+<div class="callout"><strong>Water reference example:</strong> NIST procedures use temperature-dependent water-density calculations rather than treating water as exactly 1,000 kg/m³ at every temperature. For laboratory work, record the measurement temperature and use an appropriate reference formulation.</div>
+<h2>University & laboratory problem library</h2>
+<div class="table-wrap"><table><thead><tr><th>Level</th><th>Practice problem</th><th>Expected focus</th></tr></thead><tbody>
+<tr><td>Physics</td><td>A 540 g metal sample occupies 200 cm³. Calculate density.</td><td>ρ = m/V; report units and sensible significant figures.</td></tr>
+<tr><td>Chemistry</td><td>A liquid has mass 82.50 g and volume 75.00 mL. Find its density.</td><td>Mass/volume calculation and significant figures.</td></tr>
+<tr><td>Engineering</td><td>A component has mass 2.40 kg and volume 0.000300 m³. Find density in kg/m³ and g/cm³.</td><td>Unit conversion and consistency.</td></tr>
+<tr><td>Laboratory</td><td>Mass = 125.0 ± 0.2 g; volume = 50.0 ± 0.5 cm³. Estimate density and first-order standard uncertainty.</td><td>Propagation of independent input uncertainties.</td></tr>
+<tr><td>Gas density</td><td>Use ρ = pM/(RT) for an ideal gas when pressure, molar mass and temperature are known.</td><td>SI units, temperature in kelvin and model assumptions.</td></tr>
+<tr><td>Critical thinking</td><td>Two density measurements disagree. List possible causes before averaging them.</td><td>Temperature, calibration, unit errors, bubbles, porosity, sampling and uncertainty.</td></tr>
+</tbody></table></div>
+<h2>How to use the problem library</h2>
+<p>For each problem: define the measurand, convert inputs to compatible units, calculate with the appropriate model, choose significant figures based on the inputs, and state assumptions. For laboratory work, also record conditions and evaluate uncertainty rather than reporting excessive digits.</p>
+<h2>Technical references</h2>
 <ul>
 <li><a href="https://www.nist.gov/pml/special-publication-811/nist-guide-si-chapter-8" rel="noopener noreferrer">NIST Guide to the SI, Chapter 8</a> — mass density definition and SI unit.</li>
 <li><a href="https://www.nist.gov/pml/nist-technical-note-1297/nist-tn-1297-appendix-d6-uncertainty-and-units-si-proper-use-si-and" rel="noopener noreferrer">NIST Technical Note 1297</a> — measurement uncertainty and SI usage.</li>
