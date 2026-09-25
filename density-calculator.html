@@ -70,7 +70,7 @@
 
 <label for="material">Optional material reference</label>
 <select id="material"><option value="">— Compare with a common material —</option><option value="water">Water</option><option value="ice">Ice</option><option value="air">Air</option><option value="aluminum">Aluminium</option><option value="steel">Steel</option><option value="copper">Copper</option><option value="lead">Lead</option><option value="gold">Gold</option></select>
-<label for="resultUnit">Result unit</label>
+<label for="sigFigs">Significant figures</label><select id="sigFigs"><option value="auto">Auto / full calculated value</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option></select><label for="resultUnit">Result unit</label>
 <select id="resultUnit" aria-label="Result unit"></select>
 <div class="calculator-actions">
 <button class="btn" id="calc" type="button">Calculate</button>
@@ -78,7 +78,7 @@
 <button class="btn" id="copy" type="button">Copy Result</button>
 </div>
 <div id="result" class="callout" aria-live="polite" style="margin-top:16px">Enter your values and select Calculate.</div>
-<div id="comparison" class="callout" aria-live="polite" style="margin-top:12px">Material comparison will appear here when a reference is selected.</div>
+<div id="comparison" class="callout" aria-live="polite" style="margin-top:12px">Material comparison will appear here when a reference is selected.</div><div id="uncertaintyBox" class="callout" style="margin-top:12px"><strong>Optional uncertainty:</strong> Add standard uncertainties below for a first-order estimate.</div><label for="massUnc">Mass standard uncertainty</label><input id="massUnc" type="number" step="any" min="0" placeholder="optional"><label for="volumeUnc">Volume standard uncertainty</label><input id="volumeUnc" type="number" step="any" min="0" placeholder="optional">
 </section>
 
 <h2>What your density result means</h2>
@@ -213,7 +213,7 @@
 <li>Are reference values being compared under compatible conditions?</li>
 <li>Could buoyancy, air density, evaporation, absorption, porosity or thermal expansion affect the result?</li>
 </ul>
-<h2>Technical references</h2>
+<h2>Significant figures and scientific notation</h2><p>Scientific notation makes very large or very small density values easier to read. Significant figures should reflect the measurement information available, not simply the number of digits displayed by a calculator. NIST provides guidance on expressing measured quantities and significant digits.</p><h2>Uncertainty: calculator estimate vs measurement result</h2><p>Calcora can provide a first-order propagation estimate for independent mass and volume uncertainties. This is not a complete metrological uncertainty budget. NISTs Uncertainty Machine supports measurement models, distributions, correlations, standard and expanded uncertainties, coverage intervals and uncertainty budgets.</p><h2>Technical references</h2>
 <ul>
 <li><a href="https://www.nist.gov/pml/special-publication-811/nist-guide-si-chapter-8" rel="noopener noreferrer">NIST Guide to the SI, Chapter 8</a> — mass density definition and SI unit.</li>
 <li><a href="https://www.nist.gov/pml/nist-technical-note-1297/nist-tn-1297-appendix-d6-uncertainty-and-units-si-proper-use-si-and" rel="noopener noreferrer">NIST Technical Note 1297</a> — measurement uncertainty and SI usage.</li>
@@ -230,7 +230,7 @@
 <script>
 (function(){
 var solve=document.getElementById('solve'),massBox=document.getElementById('massBox'),volumeBox=document.getElementById('volumeBox'),densityBox=document.getElementById('densityBox');
-var mass=document.getElementById('mass'),volume=document.getElementById('volume'),density=document.getElementById('density'),massUnit=document.getElementById('massUnit'),volumeUnit=document.getElementById('volumeUnit'),densityUnit=document.getElementById('densityUnit'),resultUnit=document.getElementById('resultUnit'),result=document.getElementById('result'),comparison=document.getElementById('comparison'),material=document.getElementById('material');
+var mass=document.getElementById('mass'),sigFigs=document.getElementById('sigFigs'),massUnc=document.getElementById('massUnc'),volumeUnc=document.getElementById('volumeUnc'),volume=document.getElementById('volume'),density=document.getElementById('density'),massUnit=document.getElementById('massUnit'),volumeUnit=document.getElementById('volumeUnit'),densityUnit=document.getElementById('densityUnit'),resultUnit=document.getElementById('resultUnit'),result=document.getElementById('result'),comparison=document.getElementById('comparison'),material=document.getElementById('material');
 var massToKg={mg:0.000001,g:0.001,kg:1,lb:0.45359237};
 var volumeToM3={mL:0.000001,cm3:0.000001,L:0.001,m3:1,in3:0.000016387064,ft3:0.028316846592};
 var densityToKgm3={kgm3:1,gcm3:1000,gmL:1000,kgL:1000,lbft3:16.01846337};
@@ -244,7 +244,7 @@ if(mode==='mass')opts=[['kg','kg'],['g','g'],['mg','mg'],['lb','lb']];
 if(mode==='volume')opts=[['m3','m³'],['L','L'],['cm3','cm³'],['mL','mL'],['in3','in³'],['ft3','ft³']];
 resultUnit.innerHTML=opts.map(function(x){return '<option value="'+x[0]+'">'+x[1]+'</option>';}).join('');
 }
-function fmt(n){return Number(n).toLocaleString(undefined,{maximumFractionDigits:10});}
+function fmt(n){if(!Number.isFinite(n))return '—';if(sigFigs.value==='auto')return Number(n).toLocaleString(undefined,{maximumFractionDigits:10});var sf=Number(sigFigs.value);if(n===0)return '0';var p=Math.floor(Math.log10(Math.abs(n)));var dec=Math.max(0,sf-1-p);return Number(n).toLocaleString(undefined,{maximumFractionDigits:dec,minimumFractionDigits:dec});}function sci(n){return Number(n).toExponential(6).replace(/\.?(0+)(e)/,'$2').replace('e+','e');}
 function compare(kgm3){
 if(!material.value){comparison.textContent='Select a reference material to compare your calculated density.';return;}
 var ref=refs[material.value],ratio=kgm3/ref.d;
@@ -263,7 +263,7 @@ kgm3=d*densityToKgm3[densityUnit.value];answer=(kgm3*v*volumeToM3[volumeUnit.val
 if(!Number.isFinite(m)||m<0||!Number.isFinite(d)||d<=0){result.textContent='Enter a valid mass and a density greater than zero.';return;}
 kgm3=d*densityToKgm3[densityUnit.value];answer=(m*massToKg[massUnit.value]/kgm3)/volumeToM3[resultUnit.value];unit=labels[resultUnit.value];steps='Volume = mass ÷ density = '+fmt(m)+' '+labels[massUnit.value]+' ÷ '+fmt(d)+' '+labels[densityUnit.value];
 }
-result.innerHTML='<strong>'+fmt(answer)+' '+unit+'</strong><br><span>'+steps+'</span>';
+result.innerHTML='<strong>'+fmt(answer)+' '+unit+'</strong><br><span>'+steps+'</span><br><small>Scientific notation: '+sci(answer)+' '+unit+'</small>';if(mode==='density'&&Number(massUnc.value)>0&&Number(volumeUnc.value)>0){var rel=Math.sqrt(Math.pow(Number(massUnc.value)/m,2)+Math.pow(Number(volumeUnc.value)/v,2));var u=Math.abs(answer)*rel;document.getElementById('uncertaintyBox').innerHTML='<strong>First-order standard uncertainty estimate:</strong> ±'+fmt(u)+' '+unit+' (relative '+(rel*100).toLocaleString(undefined,{maximumFractionDigits:6})+'%). This assumes independent inputs.';}
 compare(kgm3);
 }
 document.getElementById('calc').addEventListener('click',calc);
