@@ -113,6 +113,25 @@
 <h2>How to measure density in practice</h2>
 <p>For a regular solid, measure mass and calculate volume from its dimensions. For an irregular solid, volume can be determined from fluid displacement when the method is appropriate. For a liquid, a known-volume container or calibrated density measurement method can be used. In every case, record the measurement conditions because density can change with temperature and, for gases, pressure.</p>
 
+<h2>Advanced uncertainty estimate for ρ = m/V</h2>
+<p>When mass and volume are measured independently, a first-order combined standard uncertainty estimate for density can be written as:</p>
+<p><strong>u(ρ) ≈ ρ × √[(u(m)/m)² + (u(V)/V)²]</strong></p>
+<p>Here, <em>u(m)</em> and <em>u(V)</em> are standard uncertainties associated with the mass and volume measurements. This approximation assumes the input quantities are independent and that the linear uncertainty propagation is appropriate. If the measurements are correlated, or the measurement model is more complex, covariance terms and a fuller uncertainty analysis may be required.</p>
+<p><strong>Example:</strong> if the relative standard uncertainty in mass is 0.10% and in volume is 0.20%, the combined relative standard uncertainty is approximately 0.224%, before considering other uncertainty components.</p>
+<p>This is an educational propagation model, not a laboratory uncertainty budget. A research result should identify all significant uncertainty sources, their probability distributions and correlations, then follow the laboratory's documented uncertainty procedure.</p>
+
+<h2>Choosing a density measurement method</h2>
+<table><thead><tr><th>Method</th><th>Typical use</th><th>Important considerations</th></tr></thead><tbody>
+<tr><td>Mass ÷ geometric volume</td><td>Regular solid specimens</td><td>Dimensional measurement and geometry dominate the volume uncertainty.</td></tr>
+<tr><td>Fluid displacement</td><td>Suitable irregular solids</td><td>Trapped air, wetting, temperature and reading resolution can matter.</td></tr>
+<tr><td>Pycnometry</td><td>Liquids, powders or fine materials depending on method</td><td>Requires controlled procedure, calibration and appropriate reference conditions.</td></tr>
+<tr><td>Hydrostatic weighing</td><td>High-accuracy solid density work</td><td>Requires buoyancy corrections, suitable reference standards and controlled measurement conditions.</td></tr>
+<tr><td>Instrumental densimetry</td><td>Routine liquid/gas measurements</td><td>Calibration, temperature control and traceability are important.</td></tr>
+</tbody></table>
+<p>Method suitability depends on the specimen and required uncertainty. NIST describes hydrostatic weighing and reference standards for high-precision density measurements and notes that many fluid-density instruments require calibration with fluids of known density. citeturn0search3turn0search36turn0search5</p>
+
+<h2>Research notes: mass density is not every kind of “density”</h2>
+<p>In technical work, “density” can refer to different quantities. <strong>Mass density</strong> is ρ = m/V with SI unit kg/m³. Other quantities, such as number density or charge density, use the word density but have different definitions and units. This calculator is specifically for <strong>mass density</strong>. NIST distinguishes these quantities in its SI guidance. citeturn0search1</p>
 <h2>Density and buoyancy</h2>
 <p>Density can help explain why objects float or sink in a fluid, but the comparison must use densities under compatible conditions. An object with an average density lower than the surrounding fluid can float, while an object with a higher average density tends to sink. Hollow objects can therefore float even when the material itself is denser than water.</p>
 
@@ -163,7 +182,8 @@
 <li><a href="https://www.nist.gov/pml/nist-technical-note-1297/nist-tn-1297-appendix-d6-uncertainty-and-units-si-proper-use-si-and" rel="noopener noreferrer">NIST Technical Note 1297</a> — measurement uncertainty and SI usage.</li>
 <li><a href="https://www.nist.gov/publications/chapter-4-density-standards-and-traceability" rel="noopener noreferrer">NIST: Density Standards and Traceability</a> — calibration and traceability considerations.</li>
 <li><a href="https://www.nist.gov/programs-projects/standard-reference-measurements" rel="noopener noreferrer">NIST Standard Reference Measurements</a> — high-accuracy density measurement and reference materials.</li>
-</ul>
+<li><a href="https://www.nist.gov/publications/determination-density-mass-standards-requirement-and-method" rel="noopener noreferrer">NIST IR 5378: The Determination of Density of Mass Standards</a> — density measurement requirements and methods.</li>
+<li><a href="https://www.nist.gov/publications/electronic-balance-and-some-gravimetric-applications-density-solids-and-liquids" rel="noopener noreferrer">NIST IR 5375: Electronic Balance and Gravimetric Applications</a> — density of solids/liquids and pycnometry.</li></ul>
 <h2>Related calculators</h2>
 <p><a href="force-calculator.html">Force Calculator</a> · <a href="velocity-calculator.html">Velocity Calculator</a> · <a href="acceleration-calculator.html">Acceleration Calculator</a> · <a href="kinetic-energy-calculator.html">Kinetic Energy Calculator</a> · <a href="calculators.html">All Calculators</a></p>
 </main>
