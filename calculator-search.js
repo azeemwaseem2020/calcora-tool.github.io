@@ -16,11 +16,11 @@ function init(){
  var active='all';
  var aliases={emi:'loan installment monthly payment finance',loan:'emi installment monthly payment markup',tax:'salary income fbr pakistan finance',salary:'tax income pakistan',zakat:'islamic charity nisab',psx:'stock shares profit dividend capital gain portfolio',stock:'psx shares profit dividend',shares:'psx stock portfolio',solar:'sun energy load system size electricity',electricity:'solar energy load',fertilizer:'npk urea dap mop potash agriculture',npk:'fertilizer nitrogen phosphorus potassium',tmr:'feed ration livestock cattle agriculture',feed:'tmr ration livestock',force:'physics mass acceleration newton',velocity:'physics speed displacement time',acceleration:'physics velocity time',kinetic:'energy physics mass velocity',density:'mass volume measurement science',math:'percentage ratio equation quadratic average probability geometry'};
  function render(){
-   var raw=(input.value||'').trim().toLowerCase(), terms=raw.split(/\\s+/).filter(Boolean), alias=aliases[raw]||'', shown=0;
+   var raw=(input.value||'').trim().toLowerCase(), terms=raw.split(/\s+/).filter(Boolean), alias=aliases[raw]||'', shown=0;
    cards.forEach(function(card){
      var text=(card.textContent+' '+(card.getAttribute('data-keywords')||'')).toLowerCase(), cat=(card.getAttribute('data-category')||'').toLowerCase();
      var match=!terms.length||terms.some(function(t){return text.indexOf(t)!==-1;});
-     if(!match&&alias) match=alias.split(/\\s+/).some(function(t){return text.indexOf(t)!==-1;});
+     if(!match&&alias) match=alias.split(/\s+/).some(function(t){return text.indexOf(t)!==-1;});
      var visible=match&&(active==='all'||cat===active.toLowerCase()); card.hidden=!visible; if(visible)shown++;
    });
    if(count)count.textContent=raw?shown+' calculator'+(shown===1?'':'s')+' found':shown+' calculators available';
